@@ -13,11 +13,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.List;
 
 @Getter
 @Setter
@@ -25,10 +20,11 @@ import java.util.List;
 @Table(name = "user_")
 @EntityListeners(AuditingEntityListener.class)
 @ToString
-public class User implements UserDetails {
+public class User  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @ToString.Exclude
     private Long id;
 
     @NotNull
@@ -40,20 +36,4 @@ public class User implements UserDetails {
     @Column(name = "password")
     @ToString.Exclude
     private String password;
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
 }
