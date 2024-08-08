@@ -8,6 +8,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import ru.anseranser.TaskManagementSystem.dto.user.UserCreateDto;
 import ru.anseranser.TaskManagementSystem.dto.user.UserDto;
+import ru.anseranser.TaskManagementSystem.dto.user.UserUpdateDto;
 import ru.anseranser.TaskManagementSystem.model.User;
 
 @Mapper(
@@ -17,15 +18,8 @@ import ru.anseranser.TaskManagementSystem.model.User;
 public interface UserMapper {
     User toEntity(UserCreateDto userCreateDto);
 
-    UserCreateDto toDto(User user);
+    UserDto toDto(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    User partialUpdate(UserCreateDto userCreateDto, @MappingTarget User user);
-
-    User toEntity(UserDto userDto);
-
-    UserDto toDto1(User user);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    User partialUpdate(UserDto userDto, @MappingTarget User user);
+    User partialUpdate(UserUpdateDto userUpdateDto, @MappingTarget User user);
 }

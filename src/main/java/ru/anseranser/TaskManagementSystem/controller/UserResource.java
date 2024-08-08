@@ -15,9 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
+import ru.anseranser.TaskManagementSystem.dto.user.UserCreateDto;
+import ru.anseranser.TaskManagementSystem.dto.user.UserDto;
+import ru.anseranser.TaskManagementSystem.mapper.UserMapper;
 import ru.anseranser.TaskManagementSystem.model.User;
 import ru.anseranser.TaskManagementSystem.repository.UserRepository;
 
@@ -32,6 +36,7 @@ import java.util.Optional;
 public class UserResource {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     private final ObjectMapper objectMapper;
 
@@ -53,8 +58,11 @@ public class UserResource {
     }
 
     @PostMapping
-    public User create(@RequestBody @Valid User user) {
-        return userRepository.save(user);
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto create(@RequestBody @Valid UserCreateDto userCreateDto) {
+        User user = userMapper.toEntity(userCreateDto);
+        userRepository.save(user);
+        return userMapper.toDto(user);
     }
 
     @PatchMapping("/{id}")
