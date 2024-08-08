@@ -49,7 +49,7 @@ public class UserResource {
     public User getOne(@PathVariable Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id `%s` not found".formatted(id)));
     }
 
     @GetMapping("/by-ids")

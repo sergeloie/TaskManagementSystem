@@ -20,7 +20,7 @@ public class UserInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        String username = "admin";
+        String username = "admin@admin.ru";
         String password = "password";
         User user = new User();
         user.setUsername(username);
