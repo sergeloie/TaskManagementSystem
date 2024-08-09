@@ -12,10 +12,9 @@ import ru.anseranser.TaskManagementSystem.dto.task.TaskCreateDto;
 import ru.anseranser.TaskManagementSystem.dto.task.TaskDto;
 import ru.anseranser.TaskManagementSystem.dto.task.TaskUpdateDto;
 import ru.anseranser.TaskManagementSystem.model.Task;
-import ru.anseranser.TaskManagementSystem.model.User;
 
 @Mapper(
-        uses = UserMapperHelper.class,
+        uses = ReferenceMapper.class,
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
