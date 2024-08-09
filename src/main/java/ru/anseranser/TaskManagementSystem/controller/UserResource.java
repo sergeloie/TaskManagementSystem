@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import ru.anseranser.TaskManagementSystem.dto.user.UserCreateDto;
 import ru.anseranser.TaskManagementSystem.dto.user.UserDto;
+import ru.anseranser.TaskManagementSystem.dto.user.UserUpdateDto;
 import ru.anseranser.TaskManagementSystem.mapper.UserMapper;
 import ru.anseranser.TaskManagementSystem.model.User;
 import ru.anseranser.TaskManagementSystem.repository.UserRepository;
@@ -41,20 +42,23 @@ public class UserResource {
     private final ObjectMapper objectMapper;
 
     @GetMapping
-    public Page<User> getList(@ParameterObject Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<UserDto> getList(@ParameterObject Pageable pageable) {
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map(userMapper::toDto);
     }
 
     @GetMapping("/{id}")
-    public User getOne(@PathVariable Long id) {
+    public UserDto getOne(@PathVariable Long id) {
         Optional<User> userOptional = userRepository.findById(id);
-        return userOptional.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id `%s` not found".formatted(id)));
+        return userMapper.toDto(userOptional.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id `%s` not found".formatted(id))));
     }
 
     @GetMapping("/by-ids")
-    public List<User> getMany(@RequestParam List<Long> ids) {
-        return userRepository.findAllById(ids);
+    public List<UserDto> getMany(@RequestParam List<Long> ids) {
+        return userRepository.findAllById(ids).stream()
+                .map(userMapper::toDto)
+                .toList();
     }
 
     @PostMapping
@@ -66,40 +70,21 @@ public class UserResource {
     }
 
     @PatchMapping("/{id}")
-    public User patch(@PathVariable Long id, @RequestBody JsonNode patchNode) throws IOException {
+    public UserDto patch(@PathVariable Long id, @Valid @RequestBody UserUpdateDto userUpdateDto) throws IOException {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id `%s` not found".formatted(id)));
 
-        objectMapper.readerForUpdating(user).readValue(patchNode);
+        objectMapper.readerForUpdating(user).readValue(objectMapper.convertValue(userUpdateDto, JsonNode.class));
 
-        return userRepository.save(user);
-    }
-
-    @PatchMapping
-    public List<Long> patchMany(@RequestParam @Valid List<Long> ids, @RequestBody JsonNode patchNode) throws IOException {
-        Collection<User> users = userRepository.findAllById(ids);
-
-        for (User user : users) {
-            objectMapper.readerForUpdating(user).readValue(patchNode);
-        }
-
-        List<User> resultUsers = userRepository.saveAll(users);
-        return resultUsers.stream()
-                .map(User::getId)
-                .toList();
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @DeleteMapping("/{id}")
-    public User delete(@PathVariable Long id) {
+    public UserDto delete(@PathVariable Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
             userRepository.delete(user);
         }
-        return user;
-    }
-
-    @DeleteMapping
-    public void deleteMany(@RequestParam List<Long> ids) {
-        userRepository.deleteAllById(ids);
+        return userMapper.toDto(user);
     }
 }
