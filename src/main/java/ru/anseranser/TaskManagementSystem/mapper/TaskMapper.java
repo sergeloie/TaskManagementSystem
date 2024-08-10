@@ -8,6 +8,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+import ru.anseranser.TaskManagementSystem.dto.task.TaskChangeStatusDto;
 import ru.anseranser.TaskManagementSystem.dto.task.TaskCreateDto;
 import ru.anseranser.TaskManagementSystem.dto.task.TaskDto;
 import ru.anseranser.TaskManagementSystem.dto.task.TaskUpdateDto;
@@ -32,4 +33,7 @@ public interface TaskMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "executorId", target = "executor", qualifiedByName = "userById")
     void partialUpdate(TaskUpdateDto taskUpdateDto, @MappingTarget Task task);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void partialUpdate(TaskChangeStatusDto taskChangeStatusDto, @MappingTarget Task task);
 }

@@ -1,5 +1,7 @@
 package ru.anseranser.TaskManagementSystem.mapper;
 
+import lombok.RequiredArgsConstructor;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
@@ -19,27 +21,30 @@ import ru.anseranser.TaskManagementSystem.model.User;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING
 )
-public interface UserMapper {
 
-    User toEntity(UserCreateDto userCreateDto);
+public abstract class UserMapper {
 
-    UserDto toDto(User user);
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public abstract User toEntity(UserCreateDto userCreateDto);
+
+    public abstract UserDto toDto(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void partialUpdate(UserUpdateDto userUpdateDto, @MappingTarget User user);
+    public abstract void partialUpdate(UserUpdateDto userUpdateDto, @MappingTarget User user);
 
     @BeforeMapping
-    default void encryptPassword(UserCreateDto userCreateDto, PasswordEncoder encoder) {
+    public void encryptPassword(UserCreateDto userCreateDto) {
         String password = userCreateDto.getPassword();
-        userCreateDto.setPassword(encoder.encode(password));
+        userCreateDto.setPassword(passwordEncoder.encode(password));
     }
 
     @BeforeMapping
-    default void encryptPassword(UserUpdateDto userUpdateDto, PasswordEncoder encoder) {
+    public void encryptPassword(UserUpdateDto userUpdateDto) {
         String password = userUpdateDto.getPassword();
         if (password != null) {
-            userUpdateDto.setPassword(encoder.encode(password));
+            userUpdateDto.setPassword(passwordEncoder.encode(password));
         }
     }
-
 }

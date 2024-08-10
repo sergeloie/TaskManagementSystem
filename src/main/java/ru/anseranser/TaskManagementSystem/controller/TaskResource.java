@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
+import ru.anseranser.TaskManagementSystem.dto.task.TaskChangeStatusDto;
 import ru.anseranser.TaskManagementSystem.dto.task.TaskCreateDto;
 import ru.anseranser.TaskManagementSystem.dto.task.TaskDto;
 import ru.anseranser.TaskManagementSystem.dto.task.TaskParamsDto;
@@ -70,6 +72,7 @@ public class TaskResource {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("@userUtils.isUserTheAuthor(#id)")
     public TaskDto patch(@PathVariable Long id, @RequestBody TaskUpdateDto taskUpdateDto) throws IOException {
         Task task = taskRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
@@ -79,7 +82,19 @@ public class TaskResource {
         return taskMapper.toDto(taskRepository.save(task));
     }
 
+    @PatchMapping("/{id}/change-status")
+    @PreAuthorize("@userUtils.isUserTheExecutor(#id)")
+    public TaskDto patchStatus(@PathVariable Long id, @RequestBody TaskChangeStatusDto taskChangeStatusDto) {
+        Task task = taskRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
+
+        taskMapper.partialUpdate(taskChangeStatusDto, task);
+
+        return taskMapper.toDto(taskRepository.save(task));
+    }
+
     @DeleteMapping("/{id}")
+    @PreAuthorize("@userUtils.isUserTheAuthor(#id)")
     public TaskDto delete(@PathVariable Long id) {
         Task task = taskRepository.findById(id).orElse(null);
         if (task != null) {

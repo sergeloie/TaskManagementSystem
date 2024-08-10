@@ -8,6 +8,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,6 +26,7 @@ import ru.anseranser.TaskManagementSystem.dto.user.UserUpdateDto;
 import ru.anseranser.TaskManagementSystem.mapper.UserMapper;
 import ru.anseranser.TaskManagementSystem.model.User;
 import ru.anseranser.TaskManagementSystem.repository.UserRepository;
+import ru.anseranser.TaskManagementSystem.util.UserUtils;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -38,6 +40,7 @@ public class UserResource {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserUtils userUtils;
 
     private final ObjectMapper objectMapper;
 
@@ -70,6 +73,7 @@ public class UserResource {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("@userUtils.isUserTheOwner(#id)")
     public UserDto patch(@PathVariable Long id, @Valid @RequestBody UserUpdateDto userUpdateDto) throws IOException {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id `%s` not found".formatted(id)));
@@ -80,6 +84,7 @@ public class UserResource {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("@userUtils.isUserTheOwner(#id)")
     public UserDto delete(@PathVariable Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {

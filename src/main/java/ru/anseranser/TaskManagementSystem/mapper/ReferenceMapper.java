@@ -7,6 +7,7 @@ import ru.anseranser.TaskManagementSystem.model.Task;
 import ru.anseranser.TaskManagementSystem.model.User;
 import ru.anseranser.TaskManagementSystem.repository.TaskRepository;
 import ru.anseranser.TaskManagementSystem.repository.UserRepository;
+import ru.anseranser.TaskManagementSystem.util.UserUtils;
 
 @Component
 @RequiredArgsConstructor
