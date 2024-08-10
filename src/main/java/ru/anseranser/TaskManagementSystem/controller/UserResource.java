@@ -74,7 +74,7 @@ public class UserResource {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id `%s` not found".formatted(id)));
 
-        objectMapper.readerForUpdating(user).readValue(objectMapper.convertValue(userUpdateDto, JsonNode.class));
+        userMapper.partialUpdate(userUpdateDto, user);
 
         return userMapper.toDto(userRepository.save(user));
     }

@@ -6,6 +6,17 @@ meta {
 
 patch {
   url: http://127.0.0.1:8100/tasks/1
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "header": "task 111111",
+    "description": "description 1111111",
+    "taskStatus": "CREATED",
+    "taskPriority": "HIGH",
+    "authorUsername": "2",
+    "executorId": "1"
+  }
 }

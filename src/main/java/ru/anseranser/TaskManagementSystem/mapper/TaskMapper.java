@@ -31,5 +31,5 @@ public interface TaskMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "executorId", target = "executor", qualifiedByName = "userById")
-    Task partialUpdate(TaskUpdateDto taskUpdateDto, @MappingTarget Task task);
+    void partialUpdate(TaskUpdateDto taskUpdateDto, @MappingTarget Task task);
 }

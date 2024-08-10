@@ -21,7 +21,7 @@ import ru.anseranser.TaskManagementSystem.enums.TaskStatus;
 @Getter
 @Setter
 @Entity
-@Table(name = "task")
+@Table(name = "tasks")
 @EntityListeners(AuditingEntityListener.class)
 @ToString
 public class Task {

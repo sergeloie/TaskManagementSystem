@@ -21,7 +21,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "task_commentary")
+@Table(name = "task_commentaries")
 @EntityListeners(AuditingEntityListener.class)
 @ToString
 public class TaskCommentary {
