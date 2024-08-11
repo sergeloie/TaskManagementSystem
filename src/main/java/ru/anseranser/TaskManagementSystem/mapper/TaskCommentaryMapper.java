@@ -1,20 +1,13 @@
 package ru.anseranser.TaskManagementSystem.mapper;
 
-import org.mapstruct.BeanMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.anseranser.TaskManagementSystem.dto.commentary.TaskCommentaryCreateDto;
 import ru.anseranser.TaskManagementSystem.dto.commentary.TaskCommentaryDto;
-import ru.anseranser.TaskManagementSystem.model.Task;
 import ru.anseranser.TaskManagementSystem.model.TaskCommentary;
-import ru.anseranser.TaskManagementSystem.model.User;
-import ru.anseranser.TaskManagementSystem.util.UserUtils;
 
 @Mapper(
         uses = {ReferenceMapper.class},

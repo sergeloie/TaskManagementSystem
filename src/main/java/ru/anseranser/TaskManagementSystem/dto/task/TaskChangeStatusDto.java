@@ -2,7 +2,6 @@ package ru.anseranser.TaskManagementSystem.dto.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
-import lombok.Value;
 import ru.anseranser.TaskManagementSystem.enums.TaskStatus;
 
 /**

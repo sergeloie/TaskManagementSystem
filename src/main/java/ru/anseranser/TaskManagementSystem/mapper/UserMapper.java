@@ -1,7 +1,5 @@
 package ru.anseranser.TaskManagementSystem.mapper;
 
-import lombok.RequiredArgsConstructor;
-import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
@@ -10,7 +8,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.anseranser.TaskManagementSystem.dto.user.UserCreateDto;
 import ru.anseranser.TaskManagementSystem.dto.user.UserDto;

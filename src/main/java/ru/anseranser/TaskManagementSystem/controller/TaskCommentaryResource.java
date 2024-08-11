@@ -1,6 +1,5 @@
 package ru.anseranser.TaskManagementSystem.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +24,6 @@ import ru.anseranser.TaskManagementSystem.model.TaskCommentary;
 import ru.anseranser.TaskManagementSystem.repository.TaskCommentaryRepository;
 import ru.anseranser.TaskManagementSystem.util.UserUtils;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

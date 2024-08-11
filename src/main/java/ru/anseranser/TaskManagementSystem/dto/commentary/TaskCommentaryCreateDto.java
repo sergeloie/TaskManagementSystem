@@ -12,7 +12,6 @@ import lombok.Value;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskCommentaryCreateDto {
     Long taskId;
-//    Long authorId;
     @NotNull
     @NotEmpty
     String commentBody;

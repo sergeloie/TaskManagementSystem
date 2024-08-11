@@ -1,7 +1,5 @@
 package ru.anseranser.TaskManagementSystem.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -32,7 +30,6 @@ import ru.anseranser.TaskManagementSystem.specification.TaskFilter;
 import ru.anseranser.TaskManagementSystem.util.UserUtils;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

@@ -1,6 +1,5 @@
 package ru.anseranser.TaskManagementSystem.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ import ru.anseranser.TaskManagementSystem.repository.UserRepository;
 import ru.anseranser.TaskManagementSystem.util.UserUtils;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
