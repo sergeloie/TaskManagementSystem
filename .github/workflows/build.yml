@@ -18,6 +18,13 @@ jobs:
         with:
           java-version: 21
           distribution: 'zulu' # Alternative distribution options are available
+      - name: Generate JaCoCo report
+        run: make report
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: build/reports/jacoco/test/html/index.html
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
