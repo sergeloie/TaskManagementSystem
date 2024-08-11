@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,6 +29,7 @@ import ru.anseranser.TaskManagementSystem.mapper.TaskMapper;
 import ru.anseranser.TaskManagementSystem.model.Task;
 import ru.anseranser.TaskManagementSystem.repository.TaskRepository;
 import ru.anseranser.TaskManagementSystem.specification.TaskFilter;
+import ru.anseranser.TaskManagementSystem.util.UserUtils;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -41,6 +43,7 @@ public class TaskResource {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final UserUtils userUtils;
 
     @GetMapping
     public Page<TaskDto> getList(@ParameterObject TaskParamsDto taskParamsDto, @ParameterObject Pageable pageable) {
@@ -53,7 +56,7 @@ public class TaskResource {
     public TaskDto getOne(@PathVariable Long id) {
         Optional<Task> taskOptional = taskRepository.findById(id);
         return taskMapper.toDto(taskOptional.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id))));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id))));
     }
 
     @GetMapping("/by-ids")
@@ -65,17 +68,19 @@ public class TaskResource {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public TaskDto create(@RequestBody TaskCreateDto taskCreateDto) {
         Task task = taskMapper.toEntity(taskCreateDto);
+        task.setAuthor(userUtils.getCurrentUser());
         taskRepository.save(task);
         return taskMapper.toDto(task);
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("@userUtils.isUserTheAuthor(#id)")
+    @PreAuthorize("@userUtils.isUserTheTaskAuthor(#id)")
     public TaskDto patch(@PathVariable Long id, @RequestBody TaskUpdateDto taskUpdateDto) throws IOException {
         Task task = taskRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id)));
 
         taskMapper.partialUpdate(taskUpdateDto, task);
 
@@ -83,10 +88,10 @@ public class TaskResource {
     }
 
     @PatchMapping("/{id}/change-status")
-    @PreAuthorize("@userUtils.isUserTheExecutor(#id)")
+    @PreAuthorize("@userUtils.isUserTheTaskExecutor(#id)")
     public TaskDto patchStatus(@PathVariable Long id, @RequestBody TaskChangeStatusDto taskChangeStatusDto) {
         Task task = taskRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id)));
 
         taskMapper.partialUpdate(taskChangeStatusDto, task);
 
@@ -94,7 +99,7 @@ public class TaskResource {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("@userUtils.isUserTheAuthor(#id)")
+    @PreAuthorize("@userUtils.isUserTheTaskAuthor(#id)")
     public TaskDto delete(@PathVariable Long id) {
         Task task = taskRepository.findById(id).orElse(null);
         if (task != null) {

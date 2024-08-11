@@ -22,7 +22,7 @@ import ru.anseranser.TaskManagementSystem.util.UserUtils;
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TaskCommentaryMapper {
 
-    @Mapping(source = "authorId", target = "author", qualifiedByName = "userById")
+//    @Mapping(source = "authorId", target = "author", qualifiedByName = "userById")
     @Mapping(source = "taskId", target = "task", qualifiedByName = "taskById")
     TaskCommentary toEntity(TaskCommentaryCreateDto taskCommentaryCreateDto);
 

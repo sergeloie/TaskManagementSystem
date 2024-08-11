@@ -8,6 +8,6 @@ import lombok.Value;
  */
 @Value
 public class UserDto {
-    @NotNull
+    Long id;
     String username;
 }

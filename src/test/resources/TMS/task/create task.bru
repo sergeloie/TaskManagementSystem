@@ -7,7 +7,7 @@ meta {
 post {
   url: http://127.0.0.1:8100/tasks
   body: json
-  auth: none
+  auth: inherit
 }
 
 body:json {
@@ -16,7 +16,6 @@ body:json {
     "description": "description 2",
     "taskStatus": "CREATED",
     "taskPriority": "HIGH",
-    "authorId": "1",
-    "executorId": "2"
+    "executorId": "1"
   }
 }

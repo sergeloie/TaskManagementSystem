@@ -29,6 +29,6 @@ public class TaskCreateDto {
     @NotNull
     @JsonSetter(nulls = Nulls.SKIP)
     TaskPriority taskPriority = TaskPriority.LOW;
-    Long authorId;
+//    Long authorId;
     Long executorId;
 }

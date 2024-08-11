@@ -22,7 +22,7 @@ import ru.anseranser.TaskManagementSystem.model.Task;
 )
 public interface TaskMapper {
     @Mapping(source = "executorId", target = "executor", qualifiedByName = "userById")
-    @Mapping(source = "authorId", target = "author", qualifiedByName = "userById")
+//    @Mapping(source = "authorId", target = "author", qualifiedByName = "userById")
     Task toEntity(TaskCreateDto taskCreateDto);
 
     @InheritInverseConfiguration(name = "toEntity")

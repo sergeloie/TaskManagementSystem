@@ -3,6 +3,7 @@ package ru.anseranser.TaskManagementSystem.component;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.anseranser.TaskManagementSystem.enums.TaskPriority;
 import ru.anseranser.TaskManagementSystem.enums.TaskStatus;
@@ -16,6 +17,7 @@ import ru.anseranser.TaskManagementSystem.repository.UserRepository;
 public class UserInitializer implements ApplicationRunner {
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final PasswordEncoder encoder;
 
 
     @Override
@@ -24,7 +26,7 @@ public class UserInitializer implements ApplicationRunner {
         String password = "password";
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(encoder.encode(password));
         userRepository.save(user);
 
         Task task = new Task();
