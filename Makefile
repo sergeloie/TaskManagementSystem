@@ -11,7 +11,7 @@ build:
 	@./gradlew clean build
 
 report:
-	@./gradlew test jacocoTestReport sonarqube
+	@./gradlew test jacocoTestReport
 
 check:
 	@./gradlew check
