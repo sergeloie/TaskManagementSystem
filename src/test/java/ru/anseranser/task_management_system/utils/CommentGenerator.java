@@ -21,7 +21,7 @@ public class CommentGenerator {
     @PostConstruct
     private void inti() {
         commentaryCreateDtoModel = Instancio.of(TaskCommentaryCreateDto.class)
-                .supply(Select.field(TaskCommentaryCreateDto::getTaskId), () -> 1L)
+                .ignore(Select.field(TaskCommentaryCreateDto::getTaskId))
                 .supply(Select.field(TaskCommentaryCreateDto::getCommentBody), () -> faker.lorem().sentence())
                 .toModel();
     }

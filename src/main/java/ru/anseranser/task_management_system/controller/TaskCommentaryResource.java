@@ -51,6 +51,12 @@ public class TaskCommentaryResource {
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Commentary with id `%s` not found".formatted(id))));
     }
 
+    @GetMapping("/by-task-id/{id}")
+    public Page<TaskCommentaryDto> getCommentsByTaskId(@PathVariable Long id, @ParameterObject Pageable pageable) {
+        Page<TaskCommentary> commentaries = taskCommentaryRepository.findAllByTask_Id(id, pageable);
+        return commentaries.map(taskCommentaryMapper::toDto);
+    }
+
     @GetMapping("/by-ids")
     public List<TaskCommentaryDto> getMany(@RequestParam List<Long> ids) {
         return taskCommentaryRepository.findAllById(ids).stream()

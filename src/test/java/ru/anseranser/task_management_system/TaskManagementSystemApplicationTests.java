@@ -11,10 +11,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.anseranser.task_management_system.dto.commentary.TaskCommentaryCreateDto;
 import ru.anseranser.task_management_system.dto.task.TaskCreateDto;
 import ru.anseranser.task_management_system.dto.task.TaskUpdateDto;
 import ru.anseranser.task_management_system.dto.user.UserCreateDto;
 import ru.anseranser.task_management_system.model.User;
+import ru.anseranser.task_management_system.utils.CommentGenerator;
 import ru.anseranser.task_management_system.utils.JsonFieldExtractor;
 import ru.anseranser.task_management_system.utils.RequestSender;
 import ru.anseranser.task_management_system.utils.TaskGenerator;
@@ -44,12 +46,17 @@ class TaskManagementSystemApplicationTests {
     private ObjectMapper objectMapper;
     @Autowired
     private TaskGenerator taskGenerator;
+    @Autowired
+    private CommentGenerator commentGenerator;
+
+    private String result;
+    private String testToken;
 
 
     @Test
     void createUser() throws Exception {
         UserCreateDto userCreateDto = Instancio.of(userGenerator.getUserCreateDtoModel()).create();
-        String result = requestSender.sendPostRequest("/users", userCreateDto)
+        result = requestSender.sendPostRequest("/users", userCreateDto)
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
         assertThatJson(result).and(
@@ -57,7 +64,7 @@ class TaskManagementSystemApplicationTests {
                 v -> v.node("username").isEqualTo(userCreateDto.getUsername())
         );
 
-        String testToken = requestSender.sendPostRequest("/login", userCreateDto)
+        testToken = requestSender.sendPostRequest("/login", userCreateDto)
                 .andReturn().getResponse().getContentAsString();
 
         Long id = jsonFieldExtractor.getFieldAsLong(result, "id");
@@ -72,11 +79,11 @@ class TaskManagementSystemApplicationTests {
     @Test
     void createTask() throws Exception {
         UserCreateDto userCreateDto = Instancio.of(userGenerator.getUserCreateDtoModel()).create();
-        String result = requestSender.sendPostRequest("/users", userCreateDto)
+        result = requestSender.sendPostRequest("/users", userCreateDto)
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
-        String testToken = requestSender.sendPostRequest("/login", userCreateDto)
+        testToken = requestSender.sendPostRequest("/login", userCreateDto)
                 .andReturn().getResponse().getContentAsString();
 
         TaskCreateDto taskCreateDto = Instancio.of(taskGenerator.getTaskCreateDtoModel()).create();
@@ -107,6 +114,38 @@ class TaskManagementSystemApplicationTests {
                 v -> v.node("description").isEqualTo(taskUpdateDto.getDescription()),
                 v -> v.node("taskStatus").isEqualTo(taskUpdateDto.getTaskStatus()),
                 v -> v.node("taskPriority").isEqualTo(taskUpdateDto.getTaskPriority()));
+    }
+
+    @Test
+    void createComment() throws Exception {
+        UserCreateDto userCreateDto = Instancio.of(userGenerator.getUserCreateDtoModel()).create();
+        result = requestSender.sendPostRequest("/users", userCreateDto)
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        testToken = requestSender.sendPostRequest("/login", userCreateDto)
+                .andReturn().getResponse().getContentAsString();
+
+        TaskCreateDto taskCreateDto = Instancio.of(taskGenerator.getTaskCreateDtoModel()).create();
+
+        result = requestSender.sendPostRequest("/tasks", taskCreateDto, testToken)
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        Long taskId = jsonFieldExtractor.getFieldAsLong(result, "id");
+
+        TaskCommentaryCreateDto taskCommentaryCreateDto = Instancio.of(commentGenerator.getCommentaryCreateDtoModel()).create();
+        taskCommentaryCreateDto.setTaskId(taskId);
+        result = requestSender.sendPostRequest("/taskCommentaries", taskCommentaryCreateDto, testToken)
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson(result).and(
+                v -> v.node("id").isPresent(),
+                v -> v.node("taskId").isEqualTo(taskId),
+                v -> v.node("authorUsername").isEqualTo(userCreateDto.getUsername()),
+                v -> v.node("commentBody").isEqualTo(taskCommentaryCreateDto.getCommentBody()),
+                v -> v.node("createdAt").isPresent()
+        );
     }
 
 
