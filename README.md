@@ -52,10 +52,10 @@ http://localhost:8100/swagger-ui/index.html#/
 ### 4 - Получение списка задач
 Для получения списка задач нужно отправить GET запрос на `"/tasks"`  
 Доступна фильтрация и постраничный вывод результатов. Пример запроса  
-`/tasks?headerContains=task&taskStatus=CREATED&taskPriority=MEDIUM&authorId=1&executorId=2&page=0&size=2&sort=desc`
+`/tasks?headerContains=task&taskStatus=CREATED&taskPriority=MEDIUM&authorId=1&executorId=2&page=0&size=2&sort=desc`  
 Где `headerContains` - фильтрует по вхождению строки в заголовок задачи,  
 `headerContains` и `headerContains` - фильтруют по статусу и приоритету, соответсвенно,  
-`authorId` и `executorId` - фильтрация по ID автора и исполнителя, соответственно,
+`authorId` и `executorId` - фильтрация по ID автора и исполнителя, соответственно,  
 `page`, `size` `sort` - номер и размер страницы и порядок сортировки.
 
 ## Запуск приложения
