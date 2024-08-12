@@ -61,7 +61,7 @@ http://localhost:8100/swagger-ui/index.html#/
 ## Запуск приложения
 Для запуска приложения можно склонировать репозиторий
 ```shell
-git clone https://github.com/sergeloie/TaskManagementSystem.git && cd TaskManagementSystem && docker-compose up
+git clone https://github.com/sergeloie/TaskManagementSystem.git
 ```
 Перейти в каталог приложения и запустить Docker Compose
 ```shell
