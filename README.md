@@ -6,3 +6,4 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sergeloie_TaskManagementSystem&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sergeloie_TaskManagementSystem)
 
 Бекэнд веб-сервиса для управления задачами.
+Написан на Java 21 с использованием Spring Framework. 

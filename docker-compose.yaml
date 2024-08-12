@@ -1,0 +1,31 @@
+services:
+  task-management-system:
+    image: anseranser/tms_2024:v1
+    restart: "no"
+    ports:
+      - "8100:8100"
+    environment:
+      SPRING_PROFILES_ACTIVE: production
+    depends_on:
+      - postgres
+    labels:
+      amplicode.image: springboot
+  postgres:
+    image: postgres:16.3
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_secret
+      POSTGRES_DB: TaskManagementSystem
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+volumes:
+  postgres_data:
