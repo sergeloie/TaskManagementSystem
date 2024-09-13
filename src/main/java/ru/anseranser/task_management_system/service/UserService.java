@@ -1,13 +1,11 @@
 package ru.anseranser.task_management_system.service;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.anseranser.task_management_system.dto.user.UserCreateDto;
 import ru.anseranser.task_management_system.dto.user.UserDto;
@@ -16,11 +14,11 @@ import ru.anseranser.task_management_system.mapper.UserMapper;
 import ru.anseranser.task_management_system.model.User;
 import ru.anseranser.task_management_system.repository.UserRepository;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService{
 
