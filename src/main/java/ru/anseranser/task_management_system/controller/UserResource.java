@@ -25,6 +25,7 @@ import ru.anseranser.task_management_system.dto.user.UserUpdateDto;
 import ru.anseranser.task_management_system.mapper.UserMapper;
 import ru.anseranser.task_management_system.model.User;
 import ru.anseranser.task_management_system.repository.UserRepository;
+import ru.anseranser.task_management_system.service.UserService;
 import ru.anseranser.task_management_system.util.UserUtils;
 
 import java.io.IOException;
@@ -39,55 +40,40 @@ public class UserResource {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserUtils userUtils;
+    private final UserService userService;
 
     private final ObjectMapper objectMapper;
 
     @GetMapping
     public Page<UserDto> getList(@ParameterObject Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable);
-        return users.map(userMapper::toDto);
+        return userService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     public UserDto getOne(@PathVariable Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        return userMapper.toDto(userOptional.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id `%s` not found".formatted(id))));
+        return userService.findById(id);
     }
 
     @GetMapping("/by-ids")
     public List<UserDto> getMany(@RequestParam List<Long> ids) {
-        return userRepository.findAllById(ids).stream()
-                .map(userMapper::toDto)
-                .toList();
+        return userService.findAllById(ids);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@RequestBody @Valid UserCreateDto userCreateDto) {
-        User user = userMapper.toEntity(userCreateDto);
-        userRepository.save(user);
-        return userMapper.toDto(user);
+        return userService.save(userCreateDto);
     }
 
     @PatchMapping("/{id}")
     @PreAuthorize("@userUtils.isUserTheOwner(#id)")
     public UserDto patch(@PathVariable Long id, @Valid @RequestBody UserUpdateDto userUpdateDto) throws IOException {
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id `%s` not found".formatted(id)));
-
-        userMapper.partialUpdate(userUpdateDto, user);
-
-        return userMapper.toDto(userRepository.save(user));
+        return userService.patch(id, userUpdateDto);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@userUtils.isUserTheOwner(#id)")
     public UserDto delete(@PathVariable Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            userRepository.delete(user);
-        }
-        return userMapper.toDto(user);
+        return userService.deleteById(id);
     }
 }
