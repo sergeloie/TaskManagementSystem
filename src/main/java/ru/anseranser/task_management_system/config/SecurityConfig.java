@@ -21,6 +21,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.anseranser.task_management_system.service.CustomUserDetailsService;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -35,6 +37,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers("/login", "/", "/welcome").permitAll()
@@ -44,7 +47,7 @@ public class SecurityConfig {
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder)))
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(withDefaults());
 
         return http.build();
     }
