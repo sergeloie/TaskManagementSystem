@@ -15,68 +15,49 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import ru.anseranser.task_management_system.dto.commentary.TaskCommentaryCreateDto;
 import ru.anseranser.task_management_system.dto.commentary.TaskCommentaryDto;
-import ru.anseranser.task_management_system.mapper.TaskCommentaryMapper;
 import ru.anseranser.task_management_system.model.TaskCommentary;
-import ru.anseranser.task_management_system.repository.TaskCommentaryRepository;
-import ru.anseranser.task_management_system.util.UserUtils;
+import ru.anseranser.task_management_system.service.TaskCommentaryService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/taskCommentaries")
 @RequiredArgsConstructor
 public class TaskCommentaryResource {
 
-    private final TaskCommentaryRepository taskCommentaryRepository;
-    private final UserUtils userUtils;
-    private final TaskCommentaryMapper taskCommentaryMapper;
+    private final TaskCommentaryService taskCommentaryService;
 
     @GetMapping
     public Page<TaskCommentaryDto> getList(@ParameterObject Pageable pageable) {
-        Page<TaskCommentary> commentaries = taskCommentaryRepository.findAll(pageable);
-        return commentaries.map(taskCommentaryMapper::toDto);
+        return taskCommentaryService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     public TaskCommentaryDto getOne(@PathVariable Long id) {
-        Optional<TaskCommentary> taskCommentaryOptional = taskCommentaryRepository.findById(id);
-        return taskCommentaryMapper.toDto(taskCommentaryOptional.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Commentary with id `%s` not found".formatted(id))));
+        return taskCommentaryService.findById(id);
     }
 
     @GetMapping("/by-task-id/{id}")
     public Page<TaskCommentaryDto> getCommentsByTaskId(@PathVariable Long id, @ParameterObject Pageable pageable) {
-        Page<TaskCommentary> commentaries = taskCommentaryRepository.findAllByTask_Id(id, pageable);
-        return commentaries.map(taskCommentaryMapper::toDto);
+        return taskCommentaryService.findAllByTask_Id(id, pageable);
     }
 
     @GetMapping("/by-ids")
     public List<TaskCommentaryDto> getMany(@RequestParam List<Long> ids) {
-        return taskCommentaryRepository.findAllById(ids).stream()
-                .map(taskCommentaryMapper::toDto)
-                .toList();
+        return taskCommentaryService.findAllById(ids);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskCommentaryDto create(@RequestBody TaskCommentaryCreateDto taskCommentaryCreateDto) {
-        TaskCommentary taskCommentary = taskCommentaryMapper.toEntity(taskCommentaryCreateDto);
-        taskCommentary.setAuthor(userUtils.getCurrentUser());
-        taskCommentaryRepository.save(taskCommentary);
-        return taskCommentaryMapper.toDto(taskCommentary);
+        return taskCommentaryService.create(taskCommentaryCreateDto);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@userUtils.isUserTheCommentaryAuthor(#id)")
     public TaskCommentary delete(@PathVariable Long id) {
-        TaskCommentary taskCommentary = taskCommentaryRepository.findById(id).orElse(null);
-        if (taskCommentary != null) {
-            taskCommentaryRepository.delete(taskCommentary);
-        }
-        return taskCommentary;
+        return taskCommentaryService.delete(id);
     }
 }
